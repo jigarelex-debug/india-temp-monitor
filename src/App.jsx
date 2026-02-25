@@ -347,7 +347,7 @@ export default function App() {
   const [regionFilter, setRegionFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [fetched, setFetched] = useState(false);
-  const [fetchDate, setFetchDate] = useState("");
+  const [fetchTime, setFetchTime] = useState("");
 
   const states = useMemo(() => ["ALL", ...[...new Set(INDIAN_CITIES.map(c => c.s))].sort()], []);
   const regionsList = ["ALL","North","South","East","West","Central","Northeast","Islands"];
@@ -356,7 +356,7 @@ export default function App() {
     setLoading(true); setError(null); setData([]); setFetched(false);
     const yd = new Date(); yd.setDate(yd.getDate()-1);
     const ds = fmtD(yd);
-    setFetchDate(ds);
+    setFetchTime(new Date().toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "medium", timeZone: "Asia/Kolkata" }));
     const hds = [1,2,3].map(y => { const d=new Date(yd); d.setFullYear(d.getFullYear()-y); return fmtD(d); });
     const nb = Math.ceil(INDIAN_CITIES.length/BATCH), tot = nb*4;
     let ops = 0;
@@ -389,6 +389,7 @@ export default function App() {
       setData(R); setFetched(true); setLoading(false);
     } catch(e) { setError(`Fetch failed: ${e.message}. Please ensure network access to api.open-meteo.com and archive-api.open-meteo.com.`); setLoading(false); }
   }, []);
+
 useEffect(() => { fetchAll(); }, []);
 
   const filteredTable = useMemo(() => {
@@ -441,7 +442,7 @@ useEffect(() => { fetchAll(); }, []);
           </div>
           <p style={{fontSize:"11px",color:"#64748b",marginLeft:"30px",marginTop:"2px"}}>
             Live data from Open-Meteo API (free, no key) · Current vs 3-year historical avg · Region-wise
-            {fetchDate && <span> · Data for: <strong style={{color:"#94a3b8"}}>{fetchDate}</strong></span>}
+             {fetchTime && <span> · Last fetched: <strong style={{color:"#94a3b8"}}>{fetchTime}</strong></span>}
           </p>
         </div>
       </div>
