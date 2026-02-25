@@ -420,6 +420,25 @@ useEffect(() => { fetchAll(); }, []);
     };
   }, [data]);
 
+const downloadCSV = useCallback(() => {
+    if (!data.length) return;
+    const headers = ["City","State","Region","Lat","Lon","Current Max °C","Current Min °C","3Y Avg Max °C","3Y Avg Min °C","Max Deviation","Min Deviation"];
+    const rows = data.map(r => [
+      r.city, r.state, r.region, r.lat, r.lon,
+      r.current_max ?? "", r.current_min ?? "",
+      r.hist_max_avg ?? "", r.hist_min_avg ?? "",
+      r.deviation_max ?? "", r.deviation_min ?? "",
+    ].join(","));
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `india-temp-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [data]);
+
   const handleSort = k => { if(sortKey===k) setSortDir(d=>d==="asc"?"desc":"asc"); else {setSortKey(k);setSortDir("desc");} };
   const SI = ({col}) => sortKey!==col ? <span style={{opacity:0.25,fontSize:"9px",marginLeft:"2px"}}>⇅</span> : <span style={{fontSize:"9px",marginLeft:"2px"}}>{sortDir==="asc"?"↑":"↓"}</span>;
   const pPct = progress.total ? Math.round(progress.current/progress.total*100) : 0;
@@ -519,6 +538,8 @@ useEffect(() => { fetchAll(); }, []);
                   {states.map(s=><option key={s} value={s}>{s==="ALL"?"All States":s}</option>)}
                 </select>
                 <button onClick={fetchAll} style={{background:"#1e293b",border:"1px solid #334155",borderRadius:"6px",padding:"6px 12px",color:"#94a3b8",fontSize:"11px",cursor:"pointer",fontFamily:"inherit"}}>🔄 Refresh</button>
+<button onClick={downloadCSV} style={{background:"#1e293b",border:"1px solid #10b981",borderRadius:"6px",padding:"6px 12px",color:"#10b981",fontSize:"11px",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>⬇ Download CSV</button>
+
               </div>
             </div>
 
