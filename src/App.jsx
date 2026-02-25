@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
 const REGIONS = {
   North: ["DL","UP","UK","HP","HR","PB","JK","CH","RJ"],
@@ -389,6 +389,7 @@ export default function App() {
       setData(R); setFetched(true); setLoading(false);
     } catch(e) { setError(`Fetch failed: ${e.message}. Please ensure network access to api.open-meteo.com and archive-api.open-meteo.com.`); setLoading(false); }
   }, []);
+useEffect(() => { fetchAll(); }, []);
 
   const filteredTable = useMemo(() => {
     let d = [...data];
