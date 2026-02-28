@@ -1,3 +1,5 @@
+import { UserButton } from '@clerk/clerk-react'
+
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
 const REGIONS = {
