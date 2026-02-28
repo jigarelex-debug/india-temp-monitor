@@ -1,4 +1,4 @@
-import { UserButton } from '@clerk/clerk-react'
+import { UserButton, useClerk } from '@clerk/clerk-react'
 
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 
@@ -466,7 +466,10 @@ const downloadCSV = useCallback(() => {
              {fetchTime && <span> · Last fetched: <strong style={{color:"#94a3b8"}}>{fetchTime}</strong></span>}
           </p>
         </div>
-      </div>
+	<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+  <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: { width: "36px", height: "36px", border: "2px solid #f97316" } } }} />
+  <button onClick={() => window.clerk?.signOut()} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: "6px", padding: "6px 14px", color: "#94a3b8", fontSize: "11px", cursor: "pointer", fontFamily: "inherit" }}>Sign Out</button>
+</div>
 
       <div style={{padding:"20px 24px",maxWidth:"1500px",margin:"0 auto"}}>
         {!fetched && !loading && (
